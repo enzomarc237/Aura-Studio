@@ -1,0 +1,5 @@
+{
+  "name": "AI Design Studio",
+  "description": "An AI-powered application to generate UI designs, hi-fi wireframes, logos, and SVGs. Choose from templates, upload your own images to edit, and share your creations with ease.",
+  "requestFramePermissions": []
+}

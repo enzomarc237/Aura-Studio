@@ -1,0 +1,88 @@
+
+import React, { useState, useRef, useEffect } from 'react';
+import { Loader } from './Loader';
+import { Icon } from './Icon';
+
+interface CanvasProps {
+  image: string | null;
+  isLoading: boolean;
+  error: string | null;
+  onDownload: () => void;
+}
+
+export const Canvas: React.FC<CanvasProps> = ({ image, isLoading, error, onDownload }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setMousePos({ x, y });
+  };
+
+  return (
+    <div 
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      className="w-full h-full bg-slate-900 rounded-xl flex items-center justify-center relative p-4 shadow-2xl overflow-hidden transition-all duration-300"
+      style={{
+        background: `
+          radial-gradient(circle at ${mousePos.x}% ${mousePos.y}%, rgba(37, 99, 235, 0.12) 0%, transparent 40%),
+          radial-gradient(circle at ${100 - mousePos.x}% ${100 - mousePos.y}%, rgba(30, 41, 59, 1) 0%, rgba(15, 23, 42, 1) 100%)
+        `
+      } as React.CSSProperties}
+    >
+      {/* Decorative Grid */}
+      <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, #475569 1px, transparent 1px)', backgroundSize: '30px 30px' }}></div>
+
+      {isLoading && <Loader />}
+      
+      {!isLoading && error && (
+        <div className="text-center text-red-400 z-10 animate-fade-in">
+          <Icon name="alert-triangle" className="w-12 h-12 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold">Generation Failed</h3>
+          <p className="text-sm opacity-80">{error}</p>
+        </div>
+      )}
+
+      {!isLoading && !error && !image && (
+        <div className="text-center text-slate-500 z-10 animate-fade-in">
+           <div className="relative inline-block mb-6">
+             <Icon name="image" className="w-24 h-24 mx-auto opacity-30"/>
+             <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-32 h-32 bg-blue-500/10 rounded-full blur-2xl animate-pulse"></div>
+             </div>
+           </div>
+          <h2 className="text-2xl font-bold text-slate-300">Your design will appear here</h2>
+          <p className="mt-2 text-slate-500 max-w-xs mx-auto">Use the AI-powered controls on the left to start your next masterpiece.</p>
+        </div>
+      )}
+
+      {!isLoading && !error && image && (
+        <div className="relative group w-full h-full flex items-center justify-center">
+            <img 
+                src={image} 
+                alt="Generated design" 
+                className="max-w-full max-h-full object-contain rounded-lg shadow-2xl transition-transform duration-500 group-hover:scale-[1.01] z-10"
+            />
+            
+            <div className="absolute top-4 left-4 z-20">
+               <span className="px-3 py-1 bg-blue-600/80 backdrop-blur-md text-[10px] font-bold text-white rounded-full uppercase tracking-tighter shadow-lg">
+                  Final Render
+               </span>
+            </div>
+
+            <button
+                onClick={onDownload}
+                className="absolute bottom-6 right-6 flex items-center gap-2 px-6 py-3 bg-slate-800/90 backdrop-blur-md text-white rounded-full hover:bg-blue-600 transition-all duration-300 shadow-xl border border-slate-700 hover:border-blue-400 group-hover:translate-y-[-4px] z-20"
+            >
+                <Icon name="download" className="w-5 h-5"/>
+                <span className="font-semibold">Download Design</span>
+            </button>
+        </div>
+      )}
+    </div>
+  );
+};
