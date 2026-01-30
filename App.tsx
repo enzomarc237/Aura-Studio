@@ -94,7 +94,8 @@ const App: React.FC = () => {
   }, [historyIndex, history.length]);
 
   const handleNewDesign = useCallback(() => {
-    // Resetting main state
+    setHistory([]);
+    setHistoryIndex(-1);
     setActiveImage(null);
     setSourceImage(null);
     setPrompt('');
@@ -103,18 +104,7 @@ const App: React.FC = () => {
     setDesignType('ui');
     setPlatform('web');
     setError(null);
-    
-    // Push a "clean slate" to history so users can undo/redo back to this starting point
-    addToHistory({
-      image: null,
-      sourceImage: null,
-      prompt: '',
-      editPrompt: '',
-      designType: 'ui',
-      platform: 'web',
-      colorPalette: null
-    });
-  }, [addToHistory]);
+  }, []);
 
   const handleSaveSettings = (newSettings: AiSettings) => {
     setAiSettings(newSettings);
@@ -284,6 +274,7 @@ const App: React.FC = () => {
             isLoading={isLoading} 
             error={error} 
             onDownload={handleDownload}
+            onImageUpload={handleImageUpload}
           />
         </main>
       </div>

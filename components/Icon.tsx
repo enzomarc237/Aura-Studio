@@ -34,6 +34,7 @@ const icons: { [key: string]: React.ReactNode } = {
   'rotate-ccw': <><path d="M1 4v6h6"></path><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></>,
   'rotate-cw': <><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></>,
   'clock': <><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></>,
+  'chevron-down': <polyline points="6 9 12 15 18 9"></polyline>,
 };
 
 export const Icon: React.FC<IconProps> = ({ name, className = 'w-5 h-5' }) => {
